@@ -8,5 +8,5 @@ make
 
 启动：
 ```bash
-./lite-server
+./lite-server 80
 ```
