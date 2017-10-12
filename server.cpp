@@ -1,54 +1,32 @@
-//
-// Created by JIANGWEILONGGGG on 2017/10/10.
-//
-#include "task.h"
+#include "request_listener.hpp"
+#include "request_handler.hpp"
 #include "thread_pool.h"
+#include <csignal>
+
+thread_pool<request_listener> *listener_pool;
+
+void sig_handler(int sig) {
+    if (sig == SIGINT) {
+        printf("CTRL+C get\n");
+        delete listener_pool;
+    }
+}
 
 int main(int argc, char *argv[]){
-    if (argc != 2)
-    {
-        printf("usage : %s port \n", argv[0]);
-        return 1;
-    } 
-    int sockfd, connfd;
-    struct sockaddr_in servaddr, client;
-    int port = atoi(argv[1]); //port
-    // server sockaddr_in
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(port);
-    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    //create socket
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0)
-    {
-        printf("socket error.ret:%d\n", sockfd);
-        return 1;
-    }
-    int ret = bind(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
-    if (ret < 0)
-    {
-        printf("bind error.ret:%d\n", ret);
-        return 1;
-    }
-    ret = listen(sockfd, 10);
-    if (ret < 0)
-    {
-        printf("listen error.ret:%d\n", ret);
-        return 1;
-    }
+    signal(SIGINT, sig_handler);
     // thread pool
-    thread_pool<task> pool(8);
-    pool.start();
+    // listener
+    listener_pool = new thread_pool<request_listener>(1);
+    request_listener *rl = new request_listener(argc, argv);
+    pthread_t *ths = listener_pool->get_all_threads();
 
-    printf("server start.\n");
-    while (1)
-    {
-        socklen_t len = sizeof(client);
-        //new connection
-        connfd = accept(sockfd, (struct sockaddr *)&client, &len);
-        printf("accept a new connection.connfd=%d", connfd);
-        task *ta = new task(connfd);
-        pool.append_task(ta);
-    }
+    listener_pool->append_task(rl);
+    listener_pool->start();
+
+    pthread_join(ths[0],NULL);
+
+    printf("server stop\n");
+    
+    delete rl;
     return 0;
 }
