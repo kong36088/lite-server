@@ -1,8 +1,0 @@
-"I:\CLion 2017.2.3\bin\cmake\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" I:\ubuntu14.04\share\docker\c\www\lite-server
-hi
-
-I:/ubuntu14.04/share/docker/c/www/lite-server
-I:/ubuntu14.04/share/docker/c/www/lite-server/cmake-build-debug
--- Configuring done
--- Generating done
--- Build files have been written to: I:/ubuntu14.04/share/docker/c/www/lite-server/cmake-build-debug

@@ -7,15 +7,10 @@
 #add_executable(make_test ${SOURCE_FILES})
 
 
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 2.8.4)
 project(lite-server)
-
-message("hi\n")
-message(${make_test_SOURCE_DIR})
-message(${PROJECT_BINARY_DIR})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-add_custom_target(lite-server COMMAND make -C ${make_test_SOURCE_DIR}
-        CLION_EXE_DIR=${PROJECT_BINARY_DIR} && cp ${make_test_SOURCE_DIR}/lite-server ./
-        )
+add_custom_target(lite-server COMMAND make -C ${lite-server_SOURCE_DIR}
+        CLION_EXE_DIR=${PROJECT_BINARY_DIR})
