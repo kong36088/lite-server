@@ -110,9 +110,6 @@ void request_handler::execute() {
             response(message, 501);
         }
 
-    } else if (size < 0) {
-        printf("goto read again");
-        goto read;
     }
     sleep(3); // TIME_WAIT
     close(connfd);

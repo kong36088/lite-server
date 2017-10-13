@@ -16,7 +16,10 @@ class request_listener{
 private:
     int argc;
     char **argv;
-public:
+    int sockfd;
+    int connfd;
+
+  public:
     request_listener(int argc, char *argv[]):argc(argc),argv(argv) {
         if (argc != 2) {
             printf("usage : %s port \n", argv[0]);
@@ -27,10 +30,14 @@ public:
     ~request_listener();
 
     void execute();
+
+    int get_sockfd();
+
+    int get_connfd();
 };
 
 void request_listener::execute(){
-    int sockfd, connfd;
+
     struct sockaddr_in servaddr, client;
     int port = atoi(argv[1]); // port
     // server sockaddr_in
@@ -69,5 +76,13 @@ void request_listener::execute(){
 }
 
 request_listener::~request_listener(){}
+
+int request_listener::get_connfd(){
+    return connfd;
+}
+
+int request_listener::get_sockfd(){
+    return sockfd;
+}
 
 #endif
