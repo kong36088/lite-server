@@ -11,7 +11,7 @@
 #include <pthread.h>
 #include <queue>
 #include <stdio.h>
-
+#include <csignal>
 
 template<class T>
 class thread_pool {
@@ -24,7 +24,9 @@ private:
     //sem_locker queue_sem_locker;   //信号量
     cond_locker queue_cond_locker; //cond
     bool is_stop; //是否结束线程
-public:
+    bool is_quit; //线程池是否销毁
+
+  public:
     thread_pool(int thread_num = 20);
 
     ~thread_pool();
@@ -35,7 +37,13 @@ public:
 
     void stop();
 
+    void destroy();
+
     pthread_t *get_all_threads();
+
+    int get_thread_number(){
+        return thread_number;
+    }
 
   private:
     T *get_task();
@@ -66,10 +74,12 @@ thread_pool<T>::~thread_pool() {
     }
     //强行终止线程
     for (int i = 0; i < thread_number;i++){
-        pthread_detach(all_threads[i]);
-        //pthread_cancel(all_threads[i]);
+        //pthread_detach(all_threads[i]);
+        pthread_cancel(all_threads[i]);
     }
-    delete[] all_threads;
+    if(all_threads != NULL){
+        delete[] all_threads;
+    }
 }
 
 template<class T>
@@ -130,7 +140,7 @@ T *thread_pool<T>::get_task() {
 
 template<class T>
 void thread_pool<T>::run() {
-    while (!is_stop) {
+    while (!is_stop&&!is_quit) {
         T *task = get_task();
         if (task == NULL) {
             queue_cond_locker.wait();
@@ -138,7 +148,16 @@ void thread_pool<T>::run() {
             task->execute();
             delete task;
         }
+        
     }
+}
+
+template<class T>
+void thread_pool<T>::destroy(){
+    if(is_quit)
+        return;
+    is_quit = true;
+    queue_cond_locker.broadcast();
 }
 
 template<class T>

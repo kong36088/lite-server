@@ -8,7 +8,7 @@ thread_pool<request_listener> *listener_pool;
 void sig_handler(int sig) {
     if (sig == SIGINT) {
         printf("CTRL+C get\n");
-        delete listener_pool;
+        exit(0);
     }
 }
 
@@ -26,7 +26,8 @@ int main(int argc, char *argv[]){
     pthread_join(ths[0],NULL);
 
     printf("server stop\n");
-    
+
+    delete listener_pool;
     delete rl;
     return 0;
 }
