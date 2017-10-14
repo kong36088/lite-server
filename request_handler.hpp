@@ -18,7 +18,6 @@
 char *document_root = "/var/www/html";
 const int BUFFER_SIZE = 4096;
 
-//TODO task处理监听任务
 class request_handler {
 private:
     int connfd;
@@ -77,9 +76,7 @@ void request_handler::execute() {
             char *ch = NULL;
             j++;
 
-            while ((ch = strstr(argv, "Content-Length")) ==
-                   NULL) //查找请求头部中的Content-Length行
-            {
+            while ((ch = strstr(argv, "Content-Length")) == NULL) {//查找请求头部中的Content-Length行
                 k = 0;
                 memset(argv, 0, sizeof(argv));
                 while (buf[j] != '\r' && buf[j] != '\0') {
@@ -111,7 +108,7 @@ void request_handler::execute() {
         }
 
     }
-    sleep(3); // TIME_WAIT
+    //sleep(3); // TIME_WAIT
     close(connfd);
 }
 

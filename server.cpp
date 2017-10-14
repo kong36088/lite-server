@@ -15,7 +15,6 @@ void sig_handler(int sig) {
 
         printf("server stop\n");
         delete rl;
-        exit(0);
     }
 }
 
