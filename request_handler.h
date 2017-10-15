@@ -42,12 +42,16 @@ public:
     void response_post(char *filename, char *argv);
 
     void show404();
+
+    int get_connfd(){
+        return connfd;
+    }
 };
 
 void request_handler::execute() {
     char buf[BUFFER_SIZE];
     int size = 0;
-    read:
+read:
     size = read(connfd, buf, BUFFER_SIZE - 1);
     if (size > 0) {
         char method[10];
@@ -106,10 +110,14 @@ void request_handler::execute() {
             sprintf(message, "%s<hr><h3>The Lite-Server<h3></body>", message);
             response(message, 501);
         }
-
+        //TIME WAIT
+        goto read;
+    }else if(size < 0){
+        goto read;
+    }else{
+        sleep(60); // TIME_WAIT
+        close(connfd);
     }
-    //sleep(3); // TIME_WAIT
-    close(connfd);
 }
 
 void request_handler::response(char *message, int status) {

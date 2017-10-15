@@ -113,9 +113,9 @@ bool thread_pool<T>::append_task(T *task) {
 
     queue_mutex_locker.unlock();
 
-    if (is_signal) {
-        queue_cond_locker.signal();
-    }
+    //if (is_signal) {
+    queue_cond_locker.signal();
+    //}
     return true;
 }
 

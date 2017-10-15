@@ -10,13 +10,14 @@
 #include <unistd.h>
 #include <exception>
 #include "thread_pool.h"
-#include "request_handler.hpp"
+#include "request_handler.h"
 
 class request_listener{
 private:
     int argc;
     char **argv;
     int sockfd;
+    int connfd;    
 
   public:
     request_listener(int argc, char *argv[]):argc(argc),argv(argv) {
@@ -32,10 +33,10 @@ private:
 
     int get_sockfd();
 
+    int get_connfd();
 };
 
 void request_listener::execute(){
-    int connfd;
     struct sockaddr_in servaddr, client;
     int port = atoi(argv[1]); // port
     // server sockaddr_in
@@ -70,17 +71,22 @@ void request_listener::execute(){
         if(connfd == -1){
             break;
         }
-        // TODO time_wait的问题。需要尽早close
         printf("accept a new connection.connfd=%d\n", connfd);        
         request_handler *ta = new request_handler(connfd);
         handler_pool.append_task(ta);
     }
+    handler_pool.stop();
+    handler_pool.destroy();
 }
 
 request_listener::~request_listener(){}
 
 int request_listener::get_sockfd(){
     return sockfd;
+}
+
+int request_listener::get_connfd(){
+    return connfd;
 }
 
 #endif

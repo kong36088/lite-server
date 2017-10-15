@@ -1,5 +1,5 @@
-#include "request_listener.hpp"
-#include "request_handler.hpp"
+#include "request_listener.h"
+#include "request_handler.h"
 #include "thread_pool.h"
 #include <csignal>
 
@@ -10,7 +10,10 @@ void sig_handler(int sig) {
     if (sig == SIGINT) {
         printf("CTRL+C get\n");
 
-        shutdown(rl->get_sockfd(), SHUT_RDWR);
+        //关闭目前connfd
+        char buf[BUFFER_SIZE];
+        //shutdown(rl->get_sockfd(), SHUT_RDWR);
+
         close(rl->get_sockfd());
 
         printf("server stop\n");
