@@ -14,8 +14,10 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include "thirdparty/get_config.h"
 
-char *document_root = "/var/www/html";
+const char *document_root;
+
 const int BUFFER_SIZE = 4096;
 
 class request_handler {
@@ -23,9 +25,19 @@ private:
     int connfd;
 
 public:
-    request_handler() {};
+    request_handler() {
+        map<string, string> config;
+        ReadConfig("./config/config.cfg", config);
+        if(config.find("document_root")!=config.end()){
+            document_root = config["document_root"].c_str();
+        }else{
+            document_root = "/var/www/html";
+        }
+    };
 
-    request_handler(int fd) : connfd(fd) {};
+    request_handler(int fd) : connfd(fd) {
+        request_handler();
+    };
 
     ~request_handler() {
         close(connfd);
@@ -123,9 +135,7 @@ read:
 void request_handler::response(char *message, int status) {
     char buf[512];
 
-    sprintf(buf,
-            "HTTP/1.1 %d OK\r\nConnection: Close\r\ncontent-length:%d\r\n\r\n",
-            status, (int) strlen(message));
+    sprintf(buf,"HTTP/1.1 %d OK\r\nConnection: Close\r\ncontent-length:%d\r\n\r\n", status, (int) strlen(message));
 
     sprintf(buf, "%s%s", buf, message);
 
@@ -135,15 +145,13 @@ void request_handler::response(char *message, int status) {
 void request_handler::response_file(int size, int status) {
     char buf[128];
 
-    sprintf(buf,
-            "HTTP/1.1 %d OK\r\nConnection: Close\r\ncontent-length:%d\r\n\r\n",
-            status, size);
+    sprintf(buf,"HTTP/1.1 %d OK\r\nConnection: Close\r\ncontent-length:%d\r\n\r\n",status, size);
 
     write(connfd, buf, strlen(buf));
 }
 
 void request_handler::response_get(char *filename) {
-    char file[200];
+    char file[200]={'\0'};
     strcpy(file, document_root);
 
     int i = 0;
@@ -199,7 +207,6 @@ void request_handler::response_post(char *filename, char *argvs) {
 
     struct stat filestat;
     int ret = stat(file, &filestat);
-    printf("%s\n", file);
     if (ret < 0 || S_ISDIR(filestat.st_mode)) // file doesn't exits
     {
         show404();

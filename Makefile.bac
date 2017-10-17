@@ -1,0 +1,13 @@
+CC = g++
+
+LIB = -pthread
+
+all: lite-server
+
+TARGET = lite-server
+
+lite-server: server.cpp lib/locker.h lib/thread_pool.h request_handler.h request_listener.h thirdparty/get_config.h
+	$(CC) -o lite-server server.cpp lib/locker.h lib/thread_pool.h request_handler.h request_listener.h thirdparty/get_config.h $(LIB)
+
+clean:
+		rm -f *.o *~ $(TARGET)
