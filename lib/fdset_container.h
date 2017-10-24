@@ -10,35 +10,35 @@ private:
     rw_lock rwl;
 
   public:
-    fdset_container(){}
+    fdset_container(){};
 
-    fdset_container(fd_set init_set) : fds(init_set)();
+    fdset_container(fd_set init_set) : fds(init_set){};
 
     fd_set get_fds(){
         rwl.read_lock();
-        fdset temp =  fds;
+        fd_set temp = fds;
         rwl.read_unlock();
         return temp;
     }
 
     fd_set *get_fds_ptr(){
         rwl.read_lock();
-        fdset *temp_ptr = fds;
+        fd_set *temp_ptr = &fds;
         rwl.read_unlock();
         return temp_ptr;
     }
 
-    void set_fds(fd_set fds) const{
+    void set_fds(fd_set fds){
         rwl.write_lock();
-        this.fds = fds;
+        this->fds = fds;
         rwl.write_unlock();
     }
 
-    void set_fds(fd_set *fds_ptr) const{
+    void set_fds(fd_set *fds_ptr){
         rwl.write_lock();        
-        this.fds = *fds_ptr;
+        this->fds = *fds_ptr;
         rwl.write_unlock();
     }
-}
+};
 
 #endif

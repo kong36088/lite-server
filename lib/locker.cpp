@@ -97,7 +97,7 @@ void rw_lock::read_lock()
 
     ++rd_cnt;  
     while(wr_cnt > 0)  
-        pthread_mutex_wait(&cond, &mxt);  
+        pthread_cond_wait(&cond, &mxt);  
       
     pthread_mutex_unlock(&mxt);  
 }  
@@ -124,7 +124,7 @@ void rw_lock::write_lock()
     pthread_mutex_unlock(&mxt);  
 }  
 
-void rw_lock::writer_unlock() 
+void rw_lock::write_unlock() 
 {  
     pthread_mutex_lock(&mxt);  
 
