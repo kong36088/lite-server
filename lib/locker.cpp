@@ -81,3 +81,44 @@ bool cond_locker::broadcast()
 {
     return pthread_cond_broadcast(&m_cond) == 0;
 }
+
+//读写锁
+void rw_lock::read_lock() {  
+    pthread_mutex_lock(&mxt);  
+
+    ++rd_cnt;  
+    while(wr_cnt > 0)  
+        pthread_mutex_wait(&cond, &mxt);  
+      
+    pthread_mutex_unlock(&mxt);  
+}  
+
+void rw_lock::read_unlock() {  
+    pthread_mutex_lock(&mxt);  
+      
+    --rd_cnt;  
+    if (rd_cnt == 0 )  
+        pthread_cond_signal(&cond);  
+
+    pthread_mutex_unlock(&mxt);  
+}  
+
+void rw_lock::write_lock() {  
+    pthread_mutex_lock(&mxt);  
+
+    ++wr_cnt;  
+    while (wr_cnt + rd_cnt >=2)  
+        pthread_cond_wait(&cond, &mxt);  
+
+    pthread_mutex_unlock(&mxt);  
+}  
+
+void rw_lock::writer_unlock() {  
+    pthread_mutex_lock(&mxt);  
+
+    --wr_cnt;  
+    if(wr_cnt==0)  
+        pthread_cond_signal(&cond);  
+
+    pthread_mutex_unlock(&mxt);  
+}  

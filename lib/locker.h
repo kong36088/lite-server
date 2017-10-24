@@ -48,4 +48,26 @@ public:
     bool broadcast();
 };
 
+class rw_lock {  
+private:  
+    pthread_mutex_t mxt;  
+    pthread_cond_t cond;  
+    int rd_cnt;//等待读的数量  
+    int wr_cnt;//等待写的数量  
+  
+public:  
+    rw_lock() :rd_cnt(0), wr_cnt(0) {  
+        pthread_mutex_init(&mxt,NULL);  
+        pthread_cond_init(&cond,NULL);  
+    }
+
+    void read_lock();
+
+    void read_unlock();
+
+    void write_lock();
+
+    void write_unlock();
+};  
+
 #endif
