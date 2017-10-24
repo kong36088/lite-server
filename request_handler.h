@@ -127,7 +127,6 @@ read:
     }else if(size < 0){
         goto read;
     }else{
-        sleep(60); // TIME_WAIT
         close(connfd);
     }
 }
@@ -135,7 +134,7 @@ read:
 void request_handler::response(char *message, int status) {
     char buf[512];
 
-    sprintf(buf,"HTTP/1.1 %d OK\r\nConnection: Close\r\ncontent-length:%d\r\n\r\n", status, (int) strlen(message));
+    sprintf(buf,"HTTP/1.1 %d OK\r\nConnection: Close\r\nContent-Length:%d\r\n\r\n", status, (int) strlen(message));
 
     sprintf(buf, "%s%s", buf, message);
 
@@ -145,7 +144,7 @@ void request_handler::response(char *message, int status) {
 void request_handler::response_file(int size, int status) {
     char buf[128];
 
-    sprintf(buf,"HTTP/1.1 %d OK\r\nConnection: Close\r\ncontent-length:%d\r\n\r\n",status, size);
+    sprintf(buf,"HTTP/1.1 %d OK\r\nConnection: Close\r\nContent-Length:%d\r\n\r\n",status, size);
 
     write(connfd, buf, strlen(buf));
 }

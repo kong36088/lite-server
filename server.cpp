@@ -11,9 +11,9 @@ void sig_handler(int sig) {
 
         //关闭目前connfd
         char buf[BUFFER_SIZE];
-        //shutdown(rl->get_sockfd(), SHUT_RDWR);
+        //shutdown(rl->get_listenfd(), SHUT_RDWR);
 
-        close(rl->get_sockfd());
+        close(rl->get_listenfd());
 
         printf("server stop\n");
         delete rl;
