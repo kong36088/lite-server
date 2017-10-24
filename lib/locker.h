@@ -56,7 +56,8 @@ private:
     int wr_cnt;//等待写的数量  
   
 public:  
-    rw_lock() :rd_cnt(0), wr_cnt(0) {  
+    rw_lock() :rd_cnt(0), wr_cnt(0) 
+    {  
         pthread_mutex_init(&mxt,NULL);  
         pthread_cond_init(&cond,NULL);  
     }
