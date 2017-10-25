@@ -86,6 +86,7 @@ read:
     }else if(size < 0){
         goto read;
     }else{
+        //TODO 改造成select模型进行time wait
         close(connfd);
     }
 }
