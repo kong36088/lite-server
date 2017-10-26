@@ -131,11 +131,12 @@ void request_handler::response_get(char *filename) {
         filename[j] = '\0';
         is_dynamic = true;
     }
+    
+    //strcat document_root
+    strcat(file, filename);    
     if (strcmp(filename, "/") == 0) {
         // TODO config index file
-        strcat(filename, "/index.html");
-    } else {
-        strcat(file, filename);
+        strcat(file, "/index.html");
     }
     struct stat filestat;
     int ret = stat(file, &filestat);
