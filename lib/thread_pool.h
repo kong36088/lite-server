@@ -1,16 +1,15 @@
-#ifndef _THREAD_POOL_H_
-#define _THREAD_POOL_H_
+#ifndef _LITE_THREAD_POOL_H_
+#define _LITE_THREAD_POOL_H_
 
-//TODO 在cpp中include
-
+#include <iostream>
+#include <queue>
 #include "locker.h"
 #include <errno.h>
 #include <exception>
-#include <iostream>
 #include <pthread.h>
-#include <queue>
 #include <stdio.h>
 #include <csignal>
+
 
 template<class T>
 class thread_pool {
@@ -40,9 +39,7 @@ private:
 
     pthread_t *get_all_threads();
 
-    int get_thread_number(){
-        return thread_number;
-    }
+    int get_thread_number();
 
   private:
     T *get_task();
@@ -164,4 +161,9 @@ pthread_t *thread_pool<T>::get_all_threads(){
     return all_threads;
 }
 
-#endif //LITE_SERVER_THREAD_POOL_H
+template<class T>
+int thread_pool<T>::get_thread_number(){
+    return thread_number;
+}
+
+#endif
