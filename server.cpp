@@ -10,7 +10,7 @@ void sig_handler(int sig) {
     if (sig == SIGINT) {
         printf("CTRL+C get\n");
 
-        //关闭目前connfd
+        // TODO 关闭目前connfd，获取fdset中未关闭fd
         char buf[BUFFER_SIZE];
         //shutdown(rl->get_listenfd(), SHUT_RDWR);
 

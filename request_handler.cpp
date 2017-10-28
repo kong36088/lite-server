@@ -1,4 +1,5 @@
 #include "request_handler.h"
+#include <errno.h>
 
 const char *document_root = "/var/www/html";
 
@@ -22,7 +23,10 @@ void request_handler::execute() {
     char buf[BUFFER_SIZE];
     int size = 0;
 read:
+    //TODO fd设置为非阻塞
     size = read(connfd, buf, BUFFER_SIZE - 1);
+    printf("buf=%s\nsize=%d\n", buf, size);
+    printf("errno=%d\n", errno);    
     if (size > 0) {
         char method[10];
         char filename[100];
@@ -39,7 +43,6 @@ read:
 
         //比较method
         printf("Get request,method=%s path=%s\n", method, filename);
-        printf("document_root=%s", document_root);
         if (strcmp(method, "GET") == 0) {
             response_get(filename);
         } else if (strcmp(method, "POST") == 0) {
