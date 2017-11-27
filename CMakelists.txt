@@ -1,16 +1,20 @@
-#cmake_minimum_required(VERSION 3.3)
-#project(make_test)
-
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
-#set(SOURCE_FILES main.cpp)
-#add_executable(make_test ${SOURCE_FILES})
-
-
-cmake_minimum_required(VERSION 2.8.4)
+#project
 project(lite-server)
+cmake_minimum_required(VERSION 2.8)
+aux_source_directory(. DIR_SRCS)
+#file(GLOB_RECURSE HEADER_FILES include/*.h)
+set(CMAKE_BUILD_TYPE Debug)
+
+add_subdirectory(thirdparty)
+add_subdirectory(lib)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-add_custom_target(lite-server COMMAND make -C ${lite-server_SOURCE_DIR}
-        CLION_EXE_DIR=${PROJECT_BINARY_DIR})
+add_executable(lite-server ${DIR_SRCS})
+target_link_libraries(lite-server pthread thirdparty lite-lib)
+
+#修改名称
+set_target_properties(lite-server PROPERTIES OUTPUT_NAME "lite-server")
+
+#install
+install(TARGETS lite-server DESTINATION bin)
