@@ -4,6 +4,13 @@
 
 ```bash
 make
+
+# or
+
+mkdir build
+cd build
+cmake ..
+make
 ```
 
 启动：
